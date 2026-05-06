@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "brand": "Joei",
+    "nowPlaying": "上映中",
+    "upcoming": "近日公開",
+    "favorites": "お気に入り"
+  },
+  "filter": {
+    "all": "すべて",
+    "japanese": "邦画",
+    "foreign": "洋画",
+    "anime": "アニメ"
+  },
+  "sort": {
+    "label": "並び替え",
+    "default": "おすすめ",
+    "release": "公開日",
+    "rating": "評価",
+    "asc": "昇順",
+    "desc": "降順"
+  },
+  "detail": {
+    "originalTitle": "原題",
+    "releaseDate": "公開日",
+    "runtime": "上映時間",
+    "runtimeUnit": "分",
+    "genres": "ジャンル",
+    "overview": "あらすじ",
+    "rating": "評価",
+    "trailer": "予告編",
+    "back": "← 戻る",
+    "noOverview": "あらすじはまだありません。"
+  },
+  "favorites": {
+    "title": "お気に入り",
+    "subtitle": "あなたが保存した作品。",
+    "empty": "まだお気に入りに登録された作品はありません。",
+    "count": "{count} 作品",
+    "add": "お気に入りに追加",
+    "remove": "お気に入りから外す",
+    "removed": "お気に入りから外しました",
+    "undo": "元に戻す"
+  },
+  "countdown": {
+    "daysUntilRelease": "公開まであと {days} 日",
+    "releasingToday": "本日公開"
+  },
+  "home": {
+    "title": "今、日本で観られる映画",
+    "subtitle": "TMDB のデータをもとに、日本で上映中の作品を表示しています。"
+  },
+  "upcomingPage": {
+    "title": "近日公開",
+    "subtitle": "これから日本で公開される作品。"
+  },
+  "common": {
+    "empty": "該当する作品が見つかりませんでした。",
+    "loading": "読み込み中…",
+    "error": "データの取得に失敗しました。",
+    "end": "すべて読み込みました"
+  },
+  "search": {
+    "placeholder": "映画を検索…",
+    "title": "映画検索",
+    "emptyQuery": "キーワードを入力してください。",
+    "resultsFor": "「{query}」の検索結果",
+    "totalResults": "{count} 件"
+  },
+  "meta": {
+    "siteName": "Joei",
+    "siteDescription": "今、日本で観られる映画",
+    "titleSuffix": " — Joei"
+  }
+}

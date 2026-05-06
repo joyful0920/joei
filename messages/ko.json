@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "brand": "Joei",
+    "nowPlaying": "상영 중",
+    "upcoming": "개봉 예정",
+    "favorites": "찜한 영화"
+  },
+  "filter": {
+    "all": "전체",
+    "japanese": "일본 영화",
+    "foreign": "외국 영화",
+    "anime": "애니메이션"
+  },
+  "sort": {
+    "label": "정렬",
+    "default": "추천순",
+    "release": "개봉일",
+    "rating": "평점",
+    "asc": "오름차순",
+    "desc": "내림차순"
+  },
+  "detail": {
+    "originalTitle": "원제",
+    "releaseDate": "개봉일",
+    "runtime": "상영 시간",
+    "runtimeUnit": "분",
+    "genres": "장르",
+    "overview": "줄거리",
+    "rating": "평점",
+    "trailer": "예고편",
+    "back": "← 돌아가기",
+    "noOverview": "아직 등록된 줄거리가 없습니다."
+  },
+  "favorites": {
+    "title": "찜한 영화",
+    "subtitle": "내가 저장한 작품들.",
+    "empty": "아직 찜한 영화가 없습니다.",
+    "count": "{count}편",
+    "add": "찜하기",
+    "remove": "찜 해제",
+    "removed": "찜에서 제거했습니다",
+    "undo": "되돌리기"
+  },
+  "countdown": {
+    "daysUntilRelease": "개봉까지 {days}일",
+    "releasingToday": "오늘 개봉"
+  },
+  "home": {
+    "title": "지금 일본에서 볼 수 있는 영화",
+    "subtitle": "TMDB 데이터를 기반으로 일본에서 상영 중인 작품을 보여줍니다."
+  },
+  "upcomingPage": {
+    "title": "개봉 예정",
+    "subtitle": "곧 일본에서 개봉하는 작품들."
+  },
+  "common": {
+    "empty": "조건에 맞는 작품을 찾을 수 없습니다.",
+    "loading": "불러오는 중…",
+    "error": "데이터를 가져오지 못했습니다.",
+    "end": "모두 불러왔습니다"
+  },
+  "search": {
+    "placeholder": "영화 검색…",
+    "title": "영화 검색",
+    "emptyQuery": "검색어를 입력해 주세요.",
+    "resultsFor": "“{query}” 검색 결과",
+    "totalResults": "{count}건"
+  },
+  "meta": {
+    "siteName": "Joei",
+    "siteDescription": "지금 일본에서 볼 수 있는 영화",
+    "titleSuffix": " — Joei"
+  }
+}
