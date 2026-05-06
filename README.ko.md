@@ -1,6 +1,7 @@
 # Joei (上映)
 
 > 🌏 [日本語](./README.md) ・ [한국어 (현재 페이지)](./README.ko.md)
+> 🔗 Live: <https://joei.vercel.app/>
 
 「**지금 일본에서 볼 수 있는 영화**」를 일본어와 한국어로 보여주는 사이트입니다.
 TMDB API 의 `region=JP` 를 축으로, 일본에서 실제로 상영 중이거나 곧 개봉하는 작품만 노출합니다.
