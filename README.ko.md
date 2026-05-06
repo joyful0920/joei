@@ -93,10 +93,7 @@ const display = (movie.title ?? "").trim() || movie.original_title;
 ### 9. 개선 여지
 
 - 극장별 필터 (TMDB 에서는 제공되지 않아 별도 데이터 소스가 필요합니다)
-- 보고 싶은 리스트(찜) 저장 기능 (현재 인증이 없습니다. Cookie / KV 도입으로 가볍게 구현 가능합니다)
 - 영어(en) 등 locale 추가: `LANGUAGE_MAP` 과 `messages/` 에 한 세트만 추가하면 됩니다
-- 상세 페이지에 예고편(TMDB `/movie/{id}/videos`) 통합
-- 검색 결과 정렬·필터 옵션 확장
 
 ## 디렉토리 구조
 

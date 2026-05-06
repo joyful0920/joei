@@ -93,10 +93,7 @@ const display = (movie.title ?? "").trim() || movie.original_title;
 ### 9. 改善余地
 
 - 劇場別フィルタ (TMDB では取れないので別ソース要)
-- 観たいリストの永続化 (現在は認証なし。Cookie / KV を入れれば軽く実現可能)
 - 英語 (en) など locale 追加: `LANGUAGE_MAP` と `messages/` に1組足すだけで済むよう設計してある
-- 詳細ページの予告編 (TMDB `/movie/{id}/videos`) 取り込み
-- 一覧の無限スクロールとページネーション
 
 ## ディレクトリ構成
 
