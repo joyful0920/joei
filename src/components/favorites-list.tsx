@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import type { Movie } from "@/lib/tmdb/schemas";
+import {
+  MovieDetailSchema,
+  type Movie,
+  type MovieDetail,
+} from "@/lib/tmdb/schemas";
 import type { Locale } from "@/i18n/config";
 import { useToast } from "@/components/ui/toaster";
 import { MovieListInfinite } from "./movie-list-infinite";
@@ -24,31 +28,85 @@ function writeCookie(name: string, value: string) {
   document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${FAV_MAX_AGE}; SameSite=Lax`;
 }
 
-interface ToggleDetail {
-  movieId: number;
-  active: boolean;
+function withGenreIds(m: MovieDetail): Movie {
+  return {
+    ...m,
+    genre_ids:
+      m.genre_ids && m.genre_ids.length > 0
+        ? m.genre_ids
+        : (m.genres ?? []).map((g) => g.id),
+  };
 }
 
-export function FavoritesList({
-  initialMovies,
-  locale,
-}: {
-  initialMovies: Movie[];
-  locale: Locale;
-}) {
+async function fetchOneDetail(
+  id: number,
+  locale: Locale
+): Promise<Movie | null> {
+  try {
+    const res = await fetch(`/api/tmdb/movies/${id}?lang=${locale}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const parsed = MovieDetailSchema.safeParse(data);
+    if (!parsed.success) return null;
+    return withGenreIds(parsed.data);
+  } catch {
+    return null;
+  }
+}
+
+export function FavoritesList({ locale }: { locale: Locale }) {
   const t = useTranslations("favorites");
-  const [movies, setMovies] = useState<Movie[]>(initialMovies);
+  const [movies, setMovies] = useState<Movie[] | null>(null);
   const { show } = useToast();
 
+  // 마운트 시점에 쿠키 -> detail 병렬 fetch
   useEffect(() => {
-    function handleToggle(e: Event) {
-      const detail = (e as CustomEvent<ToggleDetail>).detail;
-      if (!detail) return;
-      // off (해제) 일 때만 처리. on 으로 다시 추가는 다른 페이지 시나리오라 무시.
-      if (detail.active) return;
+    const ids = parseFavoritesCookie(readCookie(FAV_COOKIE));
+    if (ids.length === 0) {
+      setMovies([]);
+      return;
+    }
+    let cancelled = false;
+    Promise.all(ids.map((id) => fetchOneDetail(id, locale))).then((list) => {
+      if (cancelled) return;
+      setMovies(list.filter((m): m is Movie => m !== null));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
+  // 같은 페이지 안에서 다른 영역의 토글에도 반응 (낙관적 제거 + Undo)
+  const handleToggle = useCallback(
+    (e: Event) => {
+      const detail = (
+        e as CustomEvent<{ movieId: number; active: boolean }>
+      ).detail;
+      if (!detail) return;
+
+      // 추가 (다른 곳에서 찜이 켜진 경우): 페이지에 fetch 후 prepend
+      if (detail.active) {
+        setMovies((prev) => {
+          if (!prev) return prev;
+          if (prev.some((m) => m.id === detail.movieId)) return prev;
+          // 비어있는 자리에 placeholder 없이 비동기 추가
+          fetchOneDetail(detail.movieId, locale).then((newMovie) => {
+            if (!newMovie) return;
+            setMovies((current) => {
+              if (!current) return current;
+              if (current.some((m) => m.id === newMovie.id)) return current;
+              return [newMovie, ...current];
+            });
+          });
+          return prev;
+        });
+        return;
+      }
+
+      // 제거: 즉시 그리드에서 떼고 Undo 토스트 발행
       let removed: Movie | undefined;
       setMovies((prev) => {
+        if (!prev) return prev;
         removed = prev.find((m) => m.id === detail.movieId);
         if (!removed) return prev;
         return prev.filter((m) => m.id !== detail.movieId);
@@ -61,7 +119,6 @@ export function FavoritesList({
         action: {
           label: t("undo"),
           onClick: () => {
-            // 쿠키 복구
             const ids = parseFavoritesCookie(readCookie(FAV_COOKIE));
             if (!ids.includes(target.id)) {
               writeCookie(
@@ -69,13 +126,13 @@ export function FavoritesList({
                 serializeFavorites([...ids, target.id])
               );
             }
-            // 상태 복구 (앞에 추가)
             setMovies((prev) =>
-              prev.some((m) => m.id === target.id)
-                ? prev
-                : [target, ...prev]
+              prev
+                ? prev.some((m) => m.id === target.id)
+                  ? prev
+                  : [target, ...prev]
+                : [target]
             );
-            // 다른 곳의 FavoriteButton 들도 다시 켜지도록 이벤트 알림
             if (typeof window !== "undefined") {
               window.dispatchEvent(
                 new CustomEvent("joei:fav-toggle", {
@@ -86,10 +143,20 @@ export function FavoritesList({
           },
         },
       });
-    }
+    },
+    [locale, show, t]
+  );
+
+  useEffect(() => {
     window.addEventListener("joei:fav-toggle", handleToggle);
     return () => window.removeEventListener("joei:fav-toggle", handleToggle);
-  }, [show, t]);
+  }, [handleToggle]);
+
+  if (movies === null) {
+    return (
+      <p className="py-16 text-center text-sm text-zinc-400">{t("loading")}</p>
+    );
+  }
 
   if (movies.length === 0) {
     return (
@@ -98,11 +165,16 @@ export function FavoritesList({
   }
 
   return (
-    <MovieListInfinite
-      initialMovies={movies}
-      initialPage={1}
-      totalPages={1}
-      locale={locale}
-    />
+    <div className="space-y-4">
+      <p className="font-inter text-sm text-zinc-500">
+        {t("count", { count: movies.length })}
+      </p>
+      <MovieListInfinite
+        initialMovies={movies}
+        initialPage={1}
+        totalPages={1}
+        locale={locale}
+      />
+    </div>
   );
 }
